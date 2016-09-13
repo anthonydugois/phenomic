@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 import webpack from "webpack"
 import { sync as rimraf } from "rimraf"
 

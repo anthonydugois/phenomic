@@ -1,6 +1,6 @@
 // @ flow
 
-import test from "ava"
+import test from "jest-ava-api"
 import React from "react"
 import { Route } from "react-router"
 

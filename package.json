@@ -105,6 +105,8 @@
     "expect-jsx": "^2.2.1",
     "flow-bin": "^0.31.1",
     "image-optim": "^3.0.0",
+    "jest": "^15.1.1",
+    "jest-ava-api": "^0.1.0",
     "js-beautify": "^1.5.10",
     "jsdom": "^9.2.0",
     "lnfs": "^3.0.0",
@@ -175,7 +177,7 @@
     "lint:js:flow": "flow check",
     "lint:js": "npm-run-all --parallel lint:js:*",
     "lint": "npm-run-all --parallel lint:*",
-    "tests": "ava",
+    "tests": "cross-env TESTING=1 jest",
     "#integration-tests": "needs this order (index test the build, and cli is cleaning it)",
     "integration-tests": "ava __tests__/index.js && ava __tests__/cli.js",
     "pretest-phenomic-theme-base": "npm run transpile",
@@ -232,6 +234,9 @@
     ],
     "rules": {
       "react/prefer-stateless-function": 0
+    },
+    "env": {
+      "jest": true
     }
   },
   "eslintConfigRuleReact/prefer-stateless-function": "https://github.com/MoOx/phenomic/issues/46",
@@ -248,5 +253,15 @@
       "babel-register"
     ],
     "babel": "inherit"
+  },
+  "jest": {
+    "preprocessorIgnorePatterns": [
+      "node_modules"
+    ],
+    "testPathIgnorePatterns": [
+      "/fixtures/",
+      "/results/"
+    ],
+    "testEnvironment": "node"
   }
 }

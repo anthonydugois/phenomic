@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import config, { testConfig } from ".."
 import { defaultOfflineConfig } from "../validators/offline.js"

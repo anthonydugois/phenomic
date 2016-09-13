@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 import questions from "../questions"
 
 const getQuestion = (name) => questions.find((q) => q.name === name)

@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import * as module from "../pages"
 import reducer from "../pages"

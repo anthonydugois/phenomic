@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import postBuild from "../postbuild"
 import { join } from "path"
