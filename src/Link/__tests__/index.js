@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 import React, { createElement } from "react"
 import { createRenderer } from "react-addons-test-utils"
 import Link from "../"
@@ -49,7 +49,7 @@ test("should allow passing props to <a> tag", () => {
       {
         to: "/",
         className: "foo",
-        foo: "bar",
+        disabled: true,
         children: <span />,
       },
     ),
@@ -63,7 +63,7 @@ test("should allow passing props to <a> tag", () => {
   expect(renderer(component)).toEqualJSX(
     <a
       className="foo"
-      foo="bar"
+      disabled
       onClick={ function noRefCheck() {} }
       style={ { } }
     >
@@ -80,7 +80,7 @@ test("should have activeClassName when url matched", () => {
         to: "/",
         className: "foo",
         activeClassName: "bar",
-        foo: "bar",
+        disabled: true,
         children: <span />,
       },
     ),
@@ -94,7 +94,7 @@ test("should have activeClassName when url matched", () => {
   expect(renderer(component)).toEqualJSX(
     <a
       className="foo bar"
-      foo="bar"
+      disabled
       onClick={ function noRefCheck() {} }
       style={ { } }
     >
@@ -111,7 +111,7 @@ test("should have activeClassName when url matched with index.html", () => {
         to: "/",
         className: "foo",
         activeClassName: "bar",
-        foo: "bar",
+        disabled: true,
         children: <span />,
       },
     ),
@@ -125,7 +125,7 @@ test("should have activeClassName when url matched with index.html", () => {
   expect(renderer(component)).toEqualJSX(
     <a
       className="foo bar"
-      foo="bar"
+      disabled
       onClick={ function noRefCheck() {} }
       style={ { } }
     >
@@ -141,7 +141,7 @@ test("should not have undefined when no activeClassName props", () => {
       {
         to: "/",
         className: "foo",
-        foo: "bar",
+        disabled: true,
         children: <span />,
       },
     ),
@@ -155,7 +155,7 @@ test("should not have undefined when no activeClassName props", () => {
   expect(renderer(component)).toEqualJSX(
     <a
       className="foo"
-      foo="bar"
+      disabled
       onClick={ function noRefCheck() {} }
       style={ { } }
     >

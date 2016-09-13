@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import url from "url"
 import normalizeBaseUrl from "../index.js"

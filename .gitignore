@@ -13,7 +13,7 @@ coverage
 lib
 
 # tests results
-**/__tests__/_output*
+**/__tests__/output*
 
 # docs
 docs/**/*.mov

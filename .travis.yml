@@ -25,6 +25,6 @@ before_install:
   # remove useless/non listed deps
   - npm prune
 
-script: npm run test-with-coverage
+script: npm run all-tests
 
 after_success: npm run coverage

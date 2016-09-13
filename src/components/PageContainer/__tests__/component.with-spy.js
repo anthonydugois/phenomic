@@ -1,11 +1,6 @@
-import test from "ava"
-import { join } from "path"
-import sinon from "sinon"
-
 import React, { createElement as jsx } from "react"
 import { createRenderer } from "react-addons-test-utils"
 
-import cleanNodeCache from "../../../_utils/clean-node-cache"
 import dom from "../../../_utils/jsdom"
 
 // fixtures
@@ -13,200 +8,199 @@ import dom from "../../../_utils/jsdom"
 const noop = () => {}
 const Page = () => <div className="Page" />
 
-// Don't print noisy log unless I mocked you
-test.beforeEach(() => {
-  console.info = noop
-})
-test.afterEach(() => {
-  // Clean node cache
-  cleanNodeCache(join(__dirname, "../component.js"))
-})
+describe("PageContainer > component with spy", () => {
+  it("should notify for Page not found", () => {
+    jest.resetModules()
+    const getPage = jest.fn()
+    const setPageNotFound = jest.fn()
+    const logger = {
+      error: jest.fn(),
+      info: jest.fn(),
+    }
 
-test.cb("should notify for page not found", (t) => {
-  const spy = sinon.spy()
-  console.error = spy
-
-  const PageContainer = require("../component").default
-  const renderer = createRenderer()
-  renderer.render(
-    jsx(
-      PageContainer,
+    const PageContainer = require("../component").default
+    const renderer = createRenderer()
+    renderer.render(
+      jsx(
+        PageContainer,
+        {
+          params: { splat: "" },
+          pages: { },
+          getPage,
+          setPageNotFound,
+          layouts: { Page },
+          logger,
+        }
+      ),
       {
-        params: { splat: "" },
-        pages: { },
-        getPage: () => {
-          t.fail()
-          t.end()
-        },
-        setPageNotFound: (pageUrl) => {
-          t.is(pageUrl, "/")
-          t.end()
-        },
-        layouts: { Page },
-      }
-    ),
-    {
-      collection: [],
-    },
-  )
-  t.true(
-    spy.calledWithMatch(/\/ is a page not found/)
-  )
-})
-
-test("should log error if default layout doesn't exits", (t) => {
-  const spy = sinon.spy()
-  console.error = spy
-
-  const PageContainer = require("../component").default
-  const renderer = createRenderer()
-  renderer.render(
-    jsx(
-      PageContainer,
-      {
-        params: { splat: "" },
-        pages: { "/": {} },
-        defaultLayout: "AnotherPage",
-        getPage: noop,
-        setPageNotFound: noop,
-        layouts: { Page },
-      }
-    ),
-    {
-      collection: [],
-    },
-  )
-  t.true(spy.calledOnce)
-  t.true(
-    spy.calledWithMatch(
-      /default layout \"AnotherPage\" not provided./
+        collection: [],
+      },
     )
-  )
-})
-
-test("should log error if required layout doesn't exits", (t) => {
-  const spy = sinon.spy()
-  console.error = spy
-
-  const PageContainer = require("../component").default
-  const renderer = createRenderer()
-  renderer.render(
-    jsx(
-      PageContainer,
-      {
-        params: { splat: "" },
-        pages: { "/": {
-          type: "SomePage",
-        } },
-        getPage: noop,
-        setPageNotFound: noop,
-        layouts: { Page },
-      }
-    ),
-    {
-      collection: [],
-    },
-  )
-  t.true(spy.calledOnce)
-  t.true(
-    spy.firstCall.calledWithMatch(
-      /Unkown page type: \"SomePage\"/
+    expect(getPage).not.toBeCalled()
+    expect(setPageNotFound).toBeCalledWith("/")
+    expect(logger.error).toBeCalledWith(
+      "phenomic: PageContainer: / is a page not found."
     )
-  )
-})
+  })
 
-test("should notify if page is not an object", (t) => {
-  const spy = sinon.spy()
-  console.info = spy
+  it("should log error if default layout doesn't exits", () => {
+    jest.resetModules()
+    const logger = {
+      error: jest.fn(),
+      info: jest.fn(),
+    }
 
-  const PageContainer = require("../component").default
-  const renderer = createRenderer()
-  renderer.render(
-    jsx(
-      PageContainer,
+    const PageContainer = require("../component").default
+    const renderer = createRenderer()
+    renderer.render(
+      jsx(
+        PageContainer,
+        {
+          params: { splat: "" },
+          pages: { "/": {} },
+          defaultLayout: "AnotherPage",
+          getPage: noop,
+          setPageNotFound: noop,
+          layouts: { Page },
+          logger,
+        }
+      ),
       {
-        params: { splat: "" },
-        pages: { "/": [] },
-        getPage: noop,
-        setPageNotFound: noop,
-        layouts: { Page },
-      }
-    ),
-    {
-      collection: [],
-    },
-  )
-  t.true(
-    spy.calledWithMatch(
-      /page \/ should be an object/
+        collection: [],
+      },
     )
-  )
-})
+    expect(logger.error.mock.calls.length).toBe(1)
+    expect(logger.error.mock.calls[0][0])
+      .toMatch(/default layout \"AnotherPage\" not provided./)
+  })
 
-test("should redirect if url doesn't match needed", (t) => {
-  const spy = sinon.spy()
-  console.info = spy
+  it("should log error if required layout doesn't exits", () => {
+    jest.resetModules()
+    const logger = {
+      error: jest.fn(),
+      info: jest.fn(),
+    }
 
-  process.env.PHENOMIC_USER_PATHNAME = "/"
-  dom("http://localhost/foo")
-
-  const PageContainer = require("../component").default
-  const renderer = createRenderer()
-  renderer.render(
-    jsx(
-      PageContainer,
+    const PageContainer = require("../component").default
+    const renderer = createRenderer()
+    renderer.render(
+      jsx(
+        PageContainer,
+        {
+          params: { splat: "" },
+          pages: { "/": {
+            type: "SomePage",
+          } },
+          getPage: noop,
+          setPageNotFound: noop,
+          layouts: { Page },
+          logger,
+        }
+      ),
       {
-        params: { splat: "foo/" },
-        pages: { "/foo/": {} },
-        getPage: noop,
-        setPageNotFound: noop,
-        layouts: { Page },
-      }
-    ),
-    {
-      collection: [ {
-        __url: "/foo/",
-      } ],
-    },
-  )
-  t.true(
-    spy.calledWithMatch(
-      // replacing by '/foo' to '/foo/'
-      /replacing by \'\/foo\' to \'\/foo\/\'/
+        collection: [],
+      },
     )
-  )
-  t.is(
-    window.location.href,
-    "http://localhost/foo/"
-  )
+    expect(logger.error.mock.calls.length).toBe(1)
+    expect(logger.error.mock.calls[0][0])
+      .toMatch(/Unkown page type: \"SomePage\"/)
+  })
+
+  it("should notify if page is not an object", () => {
+    jest.resetModules()
+    const logger = {
+      error: jest.fn(),
+      info: jest.fn(),
+    }
+    const PageContainer = require("../component").default
+    const renderer = createRenderer()
+    renderer.render(
+      jsx(
+        PageContainer,
+        {
+          params: { splat: "" },
+          pages: { "/": [] },
+          getPage: noop,
+          setPageNotFound: noop,
+          layouts: { Page },
+          logger,
+        }
+      ),
+      {
+        collection: [],
+      },
+    )
+    expect(logger.info.mock.calls[0][0])
+      .toMatch(/page \/ should be an object/)
+  })
 })
 
-test("should NOT redirect if url contains hash", (t) => {
-  process.env.PHENOMIC_USER_PATHNAME = "/"
-  dom("http://localhost/foo/#some-hash")
-
-  const PageContainer = require("../component").default
-  const renderer = createRenderer()
-
-  renderer.render(
-    jsx(
-      PageContainer,
+describe("PageContainer > component with spy and DOM", () => {
+  it("should redirect if url doesn't match needed", () => {
+    jest.resetModules()
+    const logger = {
+      error: jest.fn(),
+      info: jest.fn(),
+    }
+    process.env.PHENOMIC_USER_PATHNAME = "/"
+    dom("http://localhost/foo")
+    const PageContainer = require("../component").default
+    const renderer = createRenderer()
+    renderer.render(
+      jsx(
+        PageContainer,
+        {
+          params: { splat: "foo/" },
+          pages: { "/foo/": {} },
+          getPage: noop,
+          setPageNotFound: noop,
+          layouts: { Page },
+          logger,
+        }
+      ),
       {
-        params: { splat: "foo/" },
-        pages: { "/foo/": {} },
-        getPage: noop,
-        setPageNotFound: noop,
-        layouts: { Page },
-      }
-    ),
-    {
-      collection: [ {
-        __url: "/foo/",
-      } ],
-    },
-  )
-  t.is(
-    window.location.href,
-    "http://localhost/foo/#some-hash"
-  )
+        collection: [ {
+          __url: "/foo/",
+        } ],
+      },
+    )
+    // replacing by '/foo' to '/foo/'
+    expect(logger.info.mock.calls[1][0])
+      .toMatch(/replacing by \'\/foo\' to \'\/foo\/\'/)
+    expect(window.location.href).toEqual("http://localhost/foo/")
+  })
+
+  it("should NOT redirect if url contains hash", () => {
+    jest.resetModules()
+    const logger = {
+      error: jest.fn(),
+      info: jest.fn(),
+    }
+
+    process.env.PHENOMIC_USER_PATHNAME = "/"
+    dom("http://localhost/foo/#some-hash")
+
+    const PageContainer = require("../component").default
+    const renderer = createRenderer()
+
+    renderer.render(
+      jsx(
+        PageContainer,
+        {
+          params: { splat: "foo/" },
+          pages: { "/foo/": {} },
+          getPage: noop,
+          setPageNotFound: noop,
+          layouts: { Page },
+          logger,
+        }
+      ),
+      {
+        collection: [ {
+          __url: "/foo/",
+        } ],
+      },
+    )
+    expect(window.location.href).toEqual("http://localhost/foo/#some-hash")
+  })
 })

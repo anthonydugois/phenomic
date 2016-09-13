@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 import { join } from "path"
 
 import beautifyHTML from "../../../_utils/beautify-html"
@@ -31,8 +31,6 @@ test("don't break if there is nothing to transform", async (t) => {
 })
 
 test("writeAllHTMLFiles", (t) => {
-  t.plan(3)
-
   return writeAllHTMLFiles({
     routes: require("./fixtures/routes.js").default,
     collection,

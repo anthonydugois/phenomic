@@ -5,7 +5,7 @@ import colors from "chalk"
 
 import arrayUnique from "../../_utils/array-unique"
 
-const defaultConsole = console
+const defaultLogger = console
 
 const flattenRoute = (route) => {
   const root = route.path ? route.path : ""
@@ -77,7 +77,7 @@ const paramsListFromCollection = (collection) => {
   return params
 }
 
-const createUrlsFromParamsReplacementInUrl = (url, params, console) => {
+const createUrlsFromParamsReplacementInUrl = (url, params, logger) => {
   // don't compute anything if url doesn't seems to have dynamic parameters
   // react-router url params are like ``:that`` (or splat *)
   if (url.indexOf(":") === -1 && url.indexOf("*") === -1) {
@@ -100,7 +100,7 @@ const createUrlsFromParamsReplacementInUrl = (url, params, console) => {
         nonMissingKeys.push(paramName)
       }
       catch (e) {
-        // console.log(paramName, e.message)
+        // logger.log(paramName, e.message)
 
         const matches = e.message.match(/Missing \"(.*)\" parameter for path/)
         if (matches && matches[1]) {
@@ -122,26 +122,27 @@ const createUrlsFromParamsReplacementInUrl = (url, params, console) => {
   missingKeys = arrayUnique(missingKeys).filter(
     (key) => nonMissingKeys.indexOf(key) === -1
   )
-  if (missingKeys.length) {
-    console.log("⚠️ " + colors.red(
+
+  if (missingKeys.length > 0) {
+    logger.log("⚠️ " + colors.red(
       "It looks like some parameters can't be mapped to create routes: ",
       missingKeys.map((key) => ":" + key).join(", "),
     ))
   }
 
-  // @todo improve te algorithm to avoid duplicates,
+  // @todo improve the algorithm to avoid duplicates,
   // we will probably get better perfs
 
   return arrayUnique(urls.sort())
 }
 
-const hydrateRoutesUrls = (routesUrls, collection, console) => {
+const hydrateRoutesUrls = (routesUrls, collection, logger) => {
   const paramsList = paramsListFromCollection(collection)
 
   return routesUrls.reduce((acc, url) => {
     return [
       ...acc,
-      ...createUrlsFromParamsReplacementInUrl(url, paramsList, console),
+      ...createUrlsFromParamsReplacementInUrl(url, paramsList, logger),
     ]
   }, [])
 }
@@ -149,7 +150,7 @@ const hydrateRoutesUrls = (routesUrls, collection, console) => {
 export default (
   routes: React$Element<any>,
   collection: PhenomicCollection,
-  console: typeof console = defaultConsole,
+  logger: Object = defaultLogger,
 ): Array<string>  => {
 
   const flattenedRoutes = createRoutes(routes)
@@ -164,5 +165,5 @@ export default (
     )
   }
 
-  return hydrateRoutesUrls(flattenedRoutes, collection, console)
+  return hydrateRoutesUrls(flattenedRoutes, collection, logger)
 }

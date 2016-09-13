@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import config, { testConfig } from ".."
 import { defaultOfflineConfig } from "../validators/offline.js"
@@ -17,21 +17,25 @@ test("should provide default offlineConfig when 'offline' = true", (t) => {
   )
 })
 
-test("should warn if serviceWorker is true with http", (t) => {
-  t.plan(1)
-  const warn = global.console.warn
-  global.console.warn = (message) => {
-    t.truthy(message.indexOf("ServiceWorker will be ignored") > -1)
-  }
-  config({
-    pkg: {
-      homepage: "http://te.st/",
-      phenomic: {
-        offline: true,
+describe("configurator > offline", () => {
+  it("should warn if serviceWorker is true with http", () => {
+    const warn = global.console.warn
+    const spy = jest.fn()
+    global.console.warn = spy
+
+    config({
+      pkg: {
+        homepage: "http://te.st/",
+        phenomic: {
+          offline: true,
+        },
       },
-    },
+    })
+
+    const logMessage = spy.mock.calls[0][0]
+    expect(logMessage).toMatch(/ServiceWorker will be ignored/)
+    global.console.warn = warn
   })
-  global.console.warn = warn
 })
 
 test("should not accept invalid types for 'appcache' and 'serviceWorker'",

@@ -1,3 +1,4 @@
+import { join } from "path"
 import yargs from "./yargs.js"
 import definitions from "./definitions.js"
 import minimalValidator from "./minimal-validator.js"
@@ -28,6 +29,9 @@ export default function config({ argv = [], pkg = {} } = {}) {
   const config = {
     ...defaultAndCLIconfig,
     ...userJSConfig,
+    ...process.env.TESTING && {
+      cwd: join(__dirname, "__tests__"),
+    },
   }
 
   // validation/adjustement for each options

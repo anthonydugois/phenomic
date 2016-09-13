@@ -1,4 +1,4 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import { join } from "path"
 import configurator from ".."
@@ -7,11 +7,11 @@ test("should return a default configuration", (t) => {
   const config = configurator()
 
   const expected = {
-    cwd: process.cwd(),
+    cwd: __dirname,
     source: "content",
     destination: "dist",
     assets: {
-      path: join(process.cwd(), "content", "assets"),
+      path: join(__dirname, "content", "assets"),
       route: "assets",
     },
     CNAME: false,

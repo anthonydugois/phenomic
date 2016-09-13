@@ -1,6 +1,4 @@
 // @ flow
-
-import test from "ava"
 import React from "react"
 import { Route } from "react-router"
 
@@ -49,24 +47,24 @@ const collection: PhenomicCollection = [
   },
 ]
 
-const routes = (
-  <Route component={ Noop }>
-    <Route path="/author/:author" component={ Noop } />
-    <Route path="/blog" component={ Noop }>
-      <Route path="/category/:category" component={ Noop } />
-      <Route path="/tag/:tag" component={ Noop } />
-    </Route>
-    <Route path="/key/:key" component={ Noop } />
-    <Route path="*" component={ Noop } />
-  </Route>
-)
+describe("static > routes to urls", () => {
+  it("generate a list of routes based on tags", () => {
+    jest.resetModules()
+    const routes = (
+      <Route component={ Noop }>
+        <Route path="/author/:author" component={ Noop } />
+        <Route path="/blog" component={ Noop }>
+          <Route path="/category/:category" component={ Noop } />
+          <Route path="/tag/:tag" component={ Noop } />
+        </Route>
+        <Route path="/key/:key" component={ Noop } />
+        <Route path="*" component={ Noop } />
+      </Route>
+    )
 
-test("routes to urls", (t) => {
-  const urls = routesToUrls(routes, collection)
+    const urls = routesToUrls(routes, collection)
 
-  t.deepEqual(
-    urls,
-    [
+    expect(urls).toEqual([
       "/author/Jack",
       "/author/James",
       "/author/John",
@@ -81,24 +79,24 @@ test("routes to urls", (t) => {
       "/key/value2",
       "/one",
       "/two",
-    ]
-  )
-})
+    ])
+  })
 
-const routesNoMatches = (
-  <Route component={ Noop }>
-    <Route path="/no-match/:lol" component={ Noop } />
-    <Route path="*" component={ Noop } />
-  </Route>
-)
+  it("log message if there is no matches", () => {
+    jest.resetModules()
+    const routesNoMatches = (
+      <Route component={ Noop }>
+        <Route path="/no-match/:lol" component={ Noop } />
+        <Route path="*" component={ Noop } />
+      </Route>
+    )
 
-test("routes to urls without matches", (t) => {
-  t.plan(1)
-  routesToUrls(routesNoMatches, collection, {
-    log: (message) => {
-      t.truthy(message.includes(
-        "It looks like some parameters can't be mapped to create routes:  :lol"
-      ))
-    },
+    const log = jest.fn()
+    routesToUrls(routesNoMatches, collection, { log })
+
+    expect(log).toBeCalled()
+    expect(log.mock.calls[0][0]).toContain(
+      "It looks like some parameters can't be mapped to create routes:  :lol"
+    )
   })
 })
