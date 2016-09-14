@@ -1,11 +1,11 @@
-import test from "ava"
+import test from "jest-ava-api"
 
 import { readFileSync } from "fs"
 import { join } from "path"
 
 import globby from "globby"
 
-const testFolder = "../test-phenomic-theme-base/dist"
+const testFolder = __dirname + "/../test-phenomic-theme-base/dist"
 const files = globby.sync("**/*", {
   cwd: testFolder,
   nodir: true,

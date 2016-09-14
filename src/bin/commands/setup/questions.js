@@ -1,7 +1,7 @@
 import validUrl from "valid-url"
 
 export const defaultTestAnswers = {
-  name: "Phenomic",
+  name: "Phenomic_app",
   homepage: "https://phenomic.io/",
   twitter: "Phenomic_app",
   CNAME: false,

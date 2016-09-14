@@ -173,8 +173,7 @@
     "lint:js:flow": "flow check",
     "lint:js": "npm-run-all --parallel lint:js:*",
     "lint": "npm-run-all --parallel lint:*",
-    "#integration-tests": "needs this order (index test the build, and cli is cleaning it)",
-    "integration-tests": "ava __tests__/index.js && ava __tests__/cli.js",
+    "integration-tests": "jest integration-tests",
     "pretest-phenomic-theme-base": "npm run transpile",
     "test-phenomic-theme-base": "babel-node scripts/test-phenomic-theme-base.js",
     "posttest-phenomic-theme-base": "npm run integration-tests",
@@ -223,9 +222,6 @@
   "jest": {
     "preprocessorIgnorePatterns": [
       "node_modules"
-    ],
-    "testPathDirs": [
-      "src"
     ],
     "testPathIgnorePatterns": [
       "/fixtures/",
