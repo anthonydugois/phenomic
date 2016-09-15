@@ -34,7 +34,9 @@ test("should render a Page if page is ok", () => {
     },
   )
   expect(renderer.getRenderOutput()).toEqualJSX(
-    <Page ref={ function noRefCheck() {} } />
+    <div ref={ function noRefCheck() {} }>
+      <Page />
+    </div>
   )
 })
 
@@ -143,6 +145,8 @@ test("should render a another page layout if defaultLayout is used", () => {
   )
 
   expect(renderer.getRenderOutput()).toEqualJSX(
-    <AnotherPage ref={ function noRefCheck() {} } />
+    <div ref={ function noRefCheck() {} }>
+      <AnotherPage />
+    </div>
   )
 })

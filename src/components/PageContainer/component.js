@@ -252,7 +252,11 @@ class PageContainer extends Component<DefaultProps, Props, void> {
         return <PageLoading />
       }
       else if (Layout) {
-        return <Layout ref={ this.saveContentRef } { ...page } />
+        return (
+          <div ref={ this.saveContentRef }>
+            <Layout { ...page } />
+          </div>
+        )
       }
     }
 
