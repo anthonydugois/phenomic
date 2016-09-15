@@ -16,7 +16,7 @@ const Page = (
     children,
   },
   {
-    metadate: { pkg },
+    metadata: { pkg },
   }
 ) => {
   invariant(
