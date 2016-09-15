@@ -1,6 +1,8 @@
-import React, { Component } from "react"
+import React from "react"
 import Helmet from "react-helmet"
 import TopBarProgressIndicator from "react-topbar-progress-indicator"
+
+import Banner from "../../components/Banner"
 
 import styles from "./index.css"
 
@@ -12,19 +14,19 @@ TopBarProgressIndicator.config({
   shadowBlur: 5,
 })
 
-export default class PageLoading extends Component {
+const PageLoading = () => (
+  <div>
+    <Helmet
+      title={ "Loading..." }
+    />
+    <TopBarProgressIndicator />
+    <Banner small>
+      <h1>{ " " }</h1>
+    </Banner>
+    <div className={ styles.loader }>
+      <div className={ styles.spinner }></div>
+    </div>
+  </div>
+)
 
-  render() {
-    return (
-      <div>
-        <Helmet
-          title={ "Loading..." }
-        />
-        <TopBarProgressIndicator />
-        <div className={ styles.loader }>
-          <div className={ styles.spinner }></div>
-        </div>
-      </div>
-    )
-  }
-}
+export default PageLoading
